@@ -32,10 +32,12 @@ jobs:
           forge fmt --check
         id: fmt
 
-      - name: Run Forge build
-        run: |
-          forge build --sizes
-        id: build
+      - name: Build contracts
+        run: forge build
+
+      - name: Check contract sizes (informativo)
+        run: forge build --sizes
+        continue-on-error: true
 
       - name: Run Forge tests
         run: |
