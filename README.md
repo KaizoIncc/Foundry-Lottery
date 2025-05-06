@@ -1,66 +1,104 @@
-## Foundry
+# 🎲 Foundry Lottery
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Este proyecto implementa una **lotería descentralizada** utilizando [Foundry](https://book.getfoundry.sh/), con integración de **Chainlink VRF v2** para aleatoriedad segura y **Chainlink Automation (Keepers)** para ejecutar automáticamente la selección del ganador.
 
-Foundry consists of:
+## 📌 Características
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- Los usuarios pueden unirse a la lotería pagando una cantidad mínima de ETH.
+- Chainlink VRF selecciona un ganador de manera justa y verificable.
+- Chainlink Automation verifica regularmente si las condiciones están listas para seleccionar un ganador.
+- Solo el contrato gestiona la lógica, completamente descentralizado.
 
-## Documentation
+---
 
-https://book.getfoundry.sh/
+## 📁 Estructura del Proyecto
 
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```text
+Foundry-Lottery/
+│
+├── script/              # Scripts de despliegue
+├── src/                 # Contratos principales (Lottery.sol)
+├── test/                # Pruebas en Solidity
+├── lib/                 # Dependencias externas (Chainlink)
+├── foundry.toml         # Configuración del proyecto Foundry
+└── .env                 # Variables de entorno (clave privada, RPC, etc.)
 ```
 
-### Test
+---
 
-```shell
-$ forge test
+## 🔧 Requisitos
+
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+- [Node.js](https://nodejs.org/) (para herramientas como dotenv si se usa)
+- RPC URL (por ejemplo, de Alchemy o Infura)
+- Clave privada con fondos en Sepolia u otra testnet
+
+Instala las dependencias de Foundry:
+
+```bash
+forge install
 ```
 
-### Format
+---
 
-```shell
-$ forge fmt
+## 🚀 Uso
+
+### 🔨 Compilar
+
+```bash
+forge build
 ```
 
-### Gas Snapshots
+### ✅ Probar
 
-```shell
-$ forge snapshot
+```bash
+forge test -vv
 ```
 
-### Anvil
+### 🧪 Tomar una instantánea de gas
 
-```shell
-$ anvil
+```bash
+forge snapshot
 ```
 
-### Deploy
+### 🛠️ Desplegar (en testnet)
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```bash
+forge script script/DeployLottery.s.sol:DeployLottery --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
 ```
 
-### Cast
+> Asegúrate de tener configuradas tus variables de entorno en un archivo `.env` o como variables del sistema:
 
-```shell
-$ cast <subcommand>
+```env
+SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/tu-api-key
+PRIVATE_KEY=tu_clave_privada
+ETHERSCAN_API_KEY=tu_api_key
 ```
 
-### Help
+---
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## 🔄 Automatización con Chainlink
+
+Para usar Chainlink Keepers (Automation), registra tu contrato desplegado en [https://automation.chain.link](https://automation.chain.link) usando:
+
+- El `checkUpkeep()` para verificar si se cumplen las condiciones (ej. tiempo transcurrido y participantes).
+- El `performUpkeep()` para iniciar la solicitud de aleatoriedad.
+
+## 🎰 Aleatoriedad con Chainlink VRF
+
+Este proyecto utiliza Chainlink VRF v2. Asegúrate de:
+
+- Tener suficiente LINK en tu contrato (usa [faucets de testnet](https://faucets.chain.link/)).
+- Configurar correctamente `subscriptionId` y registrar el contrato como consumidor.
+
+---
+
+## 📜 Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo [`LICENSE`](LICENSE) para más detalles.
+
+---
+
+## 🙏 Agradecimientos
+
+Inspirado en el curso de [Patrick Collins - Solidity, Chainlink & Foundry](https://github.com/Cyfrin/foundry-smartcontract-lottery-f23) y adaptado como proyecto personal de aprendizaje.
